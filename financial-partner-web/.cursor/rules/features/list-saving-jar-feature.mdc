@@ -1,0 +1,18 @@
+---
+description: 
+globs: 
+alwaysApply: false
+---
+## Saving Jar
+
+this file describes the saving jar feature.
+
+1. the screen should have the 'Financial partner' title
+2. the screen should have the 'Caixinhas' subtitle
+3. the screen should have two buttons, one beeing 'Add Caixinhas' and the other one being 'Add a partner'
+4. the screen should have the list of saving jars
+5. to get the list of saving jars it should request the api in the endpoint `/saving-jars`
+6. the list should have a card layout
+6.1 the right side of the card should have two buttons
+6.2 each card should show the name and the goal
+7. screen layout is located at [list-saving-jar.png](mdc:layout-images/list-saving-jar.png)

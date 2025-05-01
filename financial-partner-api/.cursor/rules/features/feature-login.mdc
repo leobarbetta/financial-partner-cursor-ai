@@ -1,0 +1,15 @@
+---
+description: 
+globs: 
+alwaysApply: false
+---
+## Register user
+
+this file explain the login feature
+
+Users must authenticate in the app.
+a jwt should be generated for the user.
+jwt duration should be 1 week
+login should use the existent user module in the `src\modules\users`
+a new auth module should be created
+

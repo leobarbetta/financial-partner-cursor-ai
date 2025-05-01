@@ -1,0 +1,16 @@
+---
+description: 
+globs: 
+alwaysApply: false
+---
+## List Contributions
+
+this file describes the list Contributions feature.
+
+1. It should open a Modal after clicking in the second button of the card in the [SavingJars.tsx](mdc:src/components/SavingJars.tsx)
+2. The modal should have a close button
+3. The modal should have the title "Historico {savingJar.name}"
+4. list each contribution in a card showing value, date and partner
+5. it should list add contributions from that saving jard
+6. it should GET to '/contributions/saving-jar/{savingJarId}'
+7. it should follow the layout located at [list-contribution.png](mdc:layout-images/list-contribution.png)

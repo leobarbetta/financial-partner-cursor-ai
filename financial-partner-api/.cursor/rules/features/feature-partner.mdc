@@ -1,0 +1,21 @@
+---
+description: 
+globs: 
+alwaysApply: false
+---
+## Partner
+
+this file explains the partner feature.
+# A user can havle multiple partners inside the app
+
+1. A user should be able to add a partner
+1.1 A partner is a user, and a user is inside the user modules `src\modules\users`
+
+2. A user should be able to list partners
+
+3. Create partner feature inside of the user module `src\modules\users`
+
+Partner Model
+    Id
+    User_id(User)
+    Partner_ID(User)

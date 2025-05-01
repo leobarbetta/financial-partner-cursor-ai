@@ -1,0 +1,17 @@
+---
+description: 
+globs: 
+alwaysApply: false
+---
+## Register feature
+
+this file defines the register feature
+
+Users will be able to register
+it should require name, email, phone and password
+all fields are required
+the layout is located at `layout-images\register.png`
+it should post all data
+the api endponint is '/api/users/register'
+after registering the user should see a toast with the server message
+if request fails or there any missing info user should see a red toast

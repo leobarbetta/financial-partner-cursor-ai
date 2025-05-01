@@ -1,0 +1,21 @@
+---
+description: 
+globs: 
+alwaysApply: false
+---
+## Contribution
+
+This files explaing the contribution feature
+
+one saving-jar will have multiple contributions
+contributions will be made by users who have access in the saving-jar(owner or partners)
+This feature should include making a contribution(Value and Date) and list all contribution made in a saving-jar
+contribution can stay in the same module as the saving-jar located in `src/modules/saving-jar`
+
+Contribution Model
+    ID
+    Value
+    Date
+    User_id
+    SavingJar_ID
+

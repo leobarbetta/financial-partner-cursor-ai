@@ -1,0 +1,20 @@
+---
+description: 
+globs: 
+alwaysApply: false
+---
+## Login feature
+
+this file defines the login feature
+
+Users will be able to login
+it should require email and password
+all fields are required
+the layout is located at [login.png](mdc:layout-images/login.png)
+it should post all data
+the api endponint is '/auth/login'
+after login the user should see a toast with the server message
+user token should be saved in the localstorage
+[api-client.ts](mdc:src/lib/api-client.ts) should use the token saved
+if request fails or there any missing info user should see a red toast
+after success user should be redirect to the 'saving-jars' page

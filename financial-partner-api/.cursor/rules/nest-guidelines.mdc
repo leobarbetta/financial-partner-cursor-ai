@@ -1,0 +1,376 @@
+---
+description: 
+globs: 
+alwaysApply: true
+---
+# NestJS Project Guidelines
+
+## Project guideline
+
+1. use yarn
+2. avoid using configuration service for loading env, use `process.env` instead
+
+## Project Structure
+
+1. Follow the modular architecture:
+```
+src/
+├── app.module.ts          # Root module
+├── main.ts               # Application entry point
+├── modules/              # Feature modules
+│   └── [feature]/
+│       ├── dto/         # Data Transfer Objects
+│       ├── entities/    # Database entities
+│       ├── interfaces/  # TypeScript interfaces
+│       ├── [feature].controller.ts
+│       ├── [feature].service.ts
+│       ├── [feature].module.ts
+│       └── [feature].repository.ts
+├── common/              # Shared resources
+│   ├── decorators/
+│   ├── filters/
+│   ├── guards/
+│   ├── interceptors/
+│   └── pipes/
+└── config/             # Configuration files
+    └── environment.ts
+```
+
+## Naming Conventions
+
+1. Files:
+   - Use kebab-case for filenames
+   - Include the type in the filename (e.g., `user.controller.ts`)
+   - Test files should end with `.spec.ts`
+   - Always insert a new line at the of the file
+
+2. Classes:
+   - Use PascalCase
+   - Append type to class name (e.g., `UserController`, `UserService`)
+   ```typescript
+   // Good
+   export class UserController {}
+   
+   // Bad
+   export class userController {}
+   ```
+
+3. Methods and Properties:
+   - Use camelCase
+   - HTTP methods should be descriptive
+   ```typescript
+   // Good
+   async findUserById() {}
+   async createNewUser() {}
+   
+   // Bad
+   async getUser() {}
+   async post() {}
+   ```
+
+## Decorator Usage
+
+1. Controller Decorators:
+   ```typescript
+   @Controller('users')
+   @ApiBearerAuth('JWT')
+   export class UserController {
+     @Get(':id')
+     @UseGuards(AuthGuard)
+     async findOne(@Param('id') id: string) {}
+   }
+   ```
+
+2. Service Decorators:
+   ```typescript
+   @Injectable()
+   export class UserService {
+     constructor(
+       @InjectRepository(User)
+       private readonly userRepository: Repository<User>,
+     ) {}
+   }
+   ```
+
+## DTOs and Validation
+
+1. Always use DTOs for request/response data:
+   ```typescript
+   export class CreateUserDto {
+     @IsString()
+     @IsNotEmpty()
+     readonly name: string;
+
+     @IsEmail()
+     readonly email: string;
+
+     @IsString()
+     @MinLength(8)
+     readonly password: string;
+   }
+   ```
+
+2. Implement class-validator decorators for validation
+
+3. always use swagger decorator in the DTOs
+
+## Exception Handling
+
+1. Use built-in HTTP exceptions:
+   ```typescript
+   // Good
+   throw new NotFoundException('User not found');
+   
+   // Bad
+   throw new Error('User not found');
+   ```
+
+2. Create custom exception filters when needed:
+   ```typescript
+   @Catch(HttpException)
+   export class HttpExceptionFilter implements ExceptionFilter {
+     catch(exception: HttpException, host: ArgumentsHost) {
+       // Implementation
+     }
+   }
+   ```
+
+## Dependency Injection
+
+1. Constructor-based injection:
+   ```typescript
+   // Good
+   constructor(private readonly userService: UserService) {}
+   
+   // Bad
+   @Inject(UserService)
+   private readonly userService: UserService;
+   ```
+
+## Testing
+
+1. Unit Tests:
+   - Test files should be adjacent to the file they test
+   - Use descriptive test names
+   ```typescript
+   describe('UserService', () => {
+     it('should create a new user with valid data', () => {
+       // Test implementation
+     });
+   });
+   ```
+
+2. E2E Tests:
+   - Place in separate `test` directory
+   - Use `supertest` for HTTP requests
+
+## Environment Configuration
+
+1. Use ConfigService for environment variables:
+   ```typescript
+   constructor(private configService: ConfigService) {
+     const dbHost = this.configService.get<string>('DATABASE_HOST');
+   }
+   ```
+
+2. Validate environment variables using Joi
+
+## API Documentation
+
+1. Use Swagger decorators for API documentation:
+   ```typescript
+   @ApiTags('users')
+   @ApiResponse({ status: 201, description: 'User created successfully' })
+   @Post()
+   async create(@Body() createUserDto: CreateUserDto) {}
+   ```
+1. Use Swagger decoratir for DTOs
+
+## Performance Best Practices
+
+1. Use caching when appropriate:
+   ```typescript
+   @CacheKey('users')
+   @CacheTTL(30)
+   async findAll() {}
+   ```
+
+2. Implement pagination for list endpoints:
+   ```typescript
+   @Get()
+   async findAll(
+     @Query('page') page: number = 1,
+     @Query('limit') limit: number = 10,
+   ) {}
+   ```
+
+   # NestJS Project Guidelines
+
+// ... existing code ...
+
+## Database Configuration (PostgreSQL & TypeORM)
+
+1. Database Module Configuration:
+   ```typescript
+   // app.module.ts
+   @Module({
+     imports: [
+       TypeOrmModule.forRootAsync({
+         imports: [ConfigModule],
+         inject: [ConfigService],
+         useFactory: (configService: ConfigService) => ({
+           type: 'postgres',
+           host: configService.get('DB_HOST'),
+           port: configService.get('DB_PORT'),
+           username: configService.get('DB_USERNAME'),
+           password: configService.get('DB_PASSWORD'),
+           database: configService.get('DB_NAME'),
+           entities: ['dist/**/*.entity{.ts,.js}'],
+           synchronize: false, // Never use true in production
+           logging: ['error'],
+           ssl: process.env.NODE_ENV === 'production' ? { rejectUnauthorized: false } : false,
+         }),
+       }),
+     ],
+   })
+   export class AppModule {}
+   ```
+
+2. Entity Design:
+   ```typescript
+   // user.entity.ts
+   @Entity('users')
+   export class User {
+     @PrimaryGeneratedColumn('uuid')
+     id: string;
+
+     @Column({ type: 'varchar', length: 100 })
+     name: string;
+
+     @Column({ type: 'varchar', unique: true })
+     email: string;
+
+     @CreateDateColumn({ name: 'created_at' })
+     createdAt: Date;
+
+     @UpdateDateColumn({ name: 'updated_at' })
+     updatedAt: Date;
+
+     @DeleteDateColumn({ name: 'deleted_at' })
+     deletedAt?: Date;
+
+     @BeforeInsert()
+     @BeforeUpdate()
+     async hashPassword() {
+       // Hash password implementation
+     }
+   }
+   ```
+
+3. Repository Pattern:
+   ```typescript
+   // user.repository.ts
+   @EntityRepository(User)
+   export class UserRepository extends Repository<User> {
+     async findByEmail(email: string): Promise<User | undefined> {
+       return this.findOne({
+         where: { email },
+         select: ['id', 'email', 'name', 'password'],
+       });
+     }
+
+     async createUser(createUserDto: CreateUserDto): Promise<User> {
+       const user = this.create(createUserDto);
+       return this.save(user);
+     }
+   }
+   ```
+
+4. Migrations:
+   ```typescript
+   // migrations/1234567890-CreateUserTable.ts
+   export class CreateUserTable1234567890 implements MigrationInterface {
+     public async up(queryRunner: QueryRunner): Promise<void> {
+       await queryRunner.createTable(
+         new Table({
+           name: 'users',
+           columns: [
+             {
+               name: 'id',
+               type: 'uuid',
+               isPrimary: true,
+               generationStrategy: 'uuid',
+               default: 'uuid_generate_v4()',
+             },
+             {
+               name: 'email',
+               type: 'varchar',
+               isUnique: true,
+             },
+             {
+               name: 'created_at',
+               type: 'timestamp',
+               default: 'CURRENT_TIMESTAMP',
+             },
+           ],
+         }),
+       );
+     }
+
+     public async down(queryRunner: QueryRunner): Promise<void> {
+       await queryRunner.dropTable('users');
+     }
+   }
+   ```
+
+5. TypeORM Best Practices:
+   - Use migrations for database changes
+   - Implement soft deletes for data retention
+   - Use transactions for atomic operations
+   ```typescript
+   // transaction example
+   @Injectable()
+   export class UserService {
+     constructor(
+       @InjectRepository(User)
+       private readonly userRepository: Repository<User>,
+       private connection: Connection,
+     ) {}
+
+     async createUserWithProfile(userData: CreateUserDto): Promise<User> {
+       const queryRunner = this.connection.createQueryRunner();
+       await queryRunner.connect();
+       await queryRunner.startTransaction();
+
+       try {
+         const user = await queryRunner.manager.save(User, userData);
+         const profile = await queryRunner.manager.save(Profile, { userId: user.id });
+         await queryRunner.commitTransaction();
+         return user;
+       } catch (err) {
+         await queryRunner.rollbackTransaction();
+         throw new InternalServerErrorException('Error creating user with profile');
+       } finally {
+         await queryRunner.release();
+       }
+     }
+   }
+   ```
+
+6. Query Performance:
+   - Use proper indexes
+   - Implement query optimization
+   ```typescript
+   @Entity('users')
+   export class User {
+     // ... other columns ...
+
+     @Index('idx_user_email')
+     @Column({ unique: true })
+     email: string;
+
+     @ManyToOne(() => Company)
+     @Index('idx_user_company')
+     company: Company;
+   }
+   ```

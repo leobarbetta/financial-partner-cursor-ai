@@ -1,0 +1,21 @@
+---
+description: 
+globs: 
+alwaysApply: false
+---
+## Saving jar
+
+this file explains the savind jar feature.
+
+saving jar is a feature in the app to help couples to save money, the idea is to have a name a goal(How much money they want to save) and a limit date.
+Users should be able to create a saving jar
+Users should be able to edit a saving jar
+Users should be able to list saving jar
+users and the user parners should be able to list the saving jar.
+
+Saving Jar model
+    Id
+    Name
+    Date
+    Goal
+    User_id

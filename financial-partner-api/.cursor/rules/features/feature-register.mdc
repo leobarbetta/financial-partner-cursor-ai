@@ -1,0 +1,21 @@
+---
+description: 
+globs: 
+alwaysApply: false
+---
+## Register user
+
+this file explain the register feature
+
+a user can register in app.
+it will require name, email, phone and password.
+email and phone must be unique in the app.
+password must be hashed with bcrypt
+
+my model should be
+User:
+    Name
+    Email
+    Phone
+    Password
+

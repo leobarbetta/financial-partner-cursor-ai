@@ -1,0 +1,19 @@
+---
+description: 
+globs: 
+alwaysApply: false
+---
+## Create Saving Jar
+
+this file describes the Create saving jar feature.
+
+1. "Add Caixinha"  should open a Modal
+2. The modal should have a close button
+3. The modal should have "Adicionar Caixinha" as Title
+4. It should require Name, date and Goal(Value)
+5. It should have a button with the title "Criar"
+6. After user clicks, modal should close
+7. User should view the toast with the succes/error message 
+8. it should post to '/saving-jars'
+9. it should send "name", "date" in the yyyy-mm-dd format, "goal"
+10. after post success it should re-fetch the saving-jar

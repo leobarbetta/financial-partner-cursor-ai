@@ -1,0 +1,100 @@
+---
+description: 
+globs: 
+alwaysApply: true
+---
+# Vite and Tailwind CSS Setup
+
+This rule defines the standard configuration and best practices for using Vite and Tailwind CSS in the project.
+
+## global configuration
+
+1. use yarn
+
+
+## Vite Configuration
+
+1. Base configuration should be in `vite.config.ts`:
+```typescript
+import { defineConfig } from 'vite'
+import react from '@vitejs/plugin-react'
+import path from 'path'
+
+export default defineConfig({
+  plugins: [react()],
+  resolve: {
+    alias: {
+      '@': path.resolve(__dirname, './src'),
+    },
+  },
+  server: {
+    port: 3000,
+    open: true,
+  },
+})
+```
+
+2. Required dependencies in `package.json`:
+```json
+{
+  "devDependencies": {
+    "@vitejs/plugin-react": "^4.2.1",
+    "vite": "^5.0.0",
+    "typescript": "^5.0.0"
+  }
+}
+```
+
+## Tailwind CSS Configuration
+
+1. Base configuration should be in `tailwind.config.js`:
+```javascript
+/** @type {import('tailwindcss').Config} */
+module.exports = {
+  content: [
+    "./index.html",
+    "./src/**/*.{js,ts,jsx,tsx}",
+  ],
+  theme: {
+    extend: {
+      colors: {
+        // Add custom colors here
+      },
+    },
+  },
+  plugins: [],
+}
+```
+
+2. Required dependencies in `package.json`:
+```json
+{
+  "devDependencies": {
+    "autoprefixer": "^10.4.0"
+  }
+}
+```
+
+3. CSS librabries
+use radix to create the components and layouts
+```
+
+## Best Practices
+
+1. Always use TypeScript for Vite configuration
+2. Keep Tailwind configuration in a separate file
+3. Use radix
+4. Configure path aliases in Vite for better imports
+5. Use the latest stable versions of all dependencies
+6. Keep the development server configuration consistent across environments
+
+## Common Issues and Solutions
+
+1. If styles aren't being applied:
+   - Check if Tailwind directives are in your main CSS file
+   - Ensure content paths in tailwind.config.js are correct
+
+2. If Vite isn't starting:
+   - Check for TypeScript errors
+   - Verify all required dependencies are installed
+   - Check port availability if using custom port

@@ -1,0 +1,25 @@
+---
+description: 
+globs: 
+alwaysApply: true
+---
+## Layout rules
+
+This files defines the layour rules.
+
+1. always center the main div in the middle
+```html
+<div className="fixed inset-0 flex items-center justify-center bg-neutral-800">
+   {/* ...rest of code... */}
+</div>
+```
+
+2. Always use toast to show status of the POST, PUT, DELETE requests
+
+3. always follow the image layout provided
+
+4. if image layoyt is missing base youself [Register.tsx](mdc:src/components/Register.tsx) page
+
+5. prefer to use radix components
+
+6. If a new page is created a new route in the [App.tsx](mdc:src/App.tsx) should be create

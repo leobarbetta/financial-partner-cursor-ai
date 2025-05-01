@@ -1,0 +1,120 @@
+---
+description: 
+globs: 
+alwaysApply: true
+---
+---
+description: Guidelines for data fetching and API interactions in the project
+globs: src/**/*.{ts,tsx}
+alwaysApply: false
+---
+# Data Fetching Guidelines
+
+This document outlines the standards and best practices for data fetching in the project.
+
+## API Client Setup
+
+1. Use the centralized `apiClient` from `src/lib/api-client.ts` for all API requests
+2. The API client is pre-configured with:
+   - Base URL from environment variables
+   - JSON content type headers
+   - Authentication token handling
+   - Error interception
+
+## React Query Integration
+
+1. Use the provided `useApiQuery` and `useApiMutation` hooks located at `src/hooks` for data fetching
+2. Configure the query client with appropriate defaults:
+   ```typescript
+   const queryClient = new QueryClient({
+     defaultOptions: {
+       queries: {
+         staleTime: 5 * 60 * 1000, // 5 minutes
+         gcTime: 30 * 60 * 1000, // 30 minutes
+         retry: 1,
+         refetchOnWindowFocus: false,
+       },
+     },
+   });
+   ```
+
+## Query Implementation
+
+1. Use `useApiQuery` for GET requests and data fetching:
+   ```typescript
+   const { data, isLoading, error } = useApiQuery({
+     queryKey: ['resource', id],
+     queryFn: () => apiClient.get(`/endpoint/${id}`).then(res => res.data),
+   });
+   ```
+
+2. Always provide:
+   - Unique `queryKey` array
+   - Properly typed `queryFn`
+   - Error handling through `onError` callback
+
+## Mutation Implementation
+
+1. Use `useApiMutation` for POST, PUT, DELETE requests:
+   ```typescript
+   const mutation = useApiMutation({
+     mutationFn: (variables) => 
+       apiClient.post('/endpoint', variables).then(res => res.data),
+   });
+   ```
+
+2. Handle mutations with:
+   - Proper variable typing
+   - Success/error callbacks
+   - Optimistic updates when appropriate
+
+## Error Handling
+
+1. All API errors are automatically handled through `handleApiError`
+2. Custom error handling should be done in the `onError` callback
+3. API errors include:
+   - Error message
+   - Status code
+   - Optional data payload
+
+## Authentication
+
+1. Authentication token is automatically handled by the API client
+2. Unauthorized requests (401) will:
+   - Remove the auth token
+   - Redirect to login page
+
+## Best Practices
+
+1. Always type your API responses and variables
+2. Use proper error boundaries for error handling
+3. Implement loading states for better UX
+4. Cache data appropriately using React Query's caching mechanisms
+5. Keep query keys consistent and unique
+6. Use optimistic updates for better UX in mutations
+7. Implement proper error messages for users
+
+## Example Implementations
+
+```typescript
+// Query Example
+const { data, isLoading } = useApiQuery<UserData>({
+  queryKey: ['user', userId],
+  queryFn: () => apiClient.get(`/users/${userId}`).then(res => res.data),
+  onError: (error) => {
+    // Handle specific error cases
+    if (error.status === 404) {
+      // Handle not found
+    }
+  },
+});
+
+// Mutation Example
+const { mutate } = useApiMutation<UserData, UpdateUserData>({
+  mutationFn: (data) => 
+    apiClient.put(`/users/${userId}`, data).then(res => res.data),
+  onSuccess: (data) => {
+    // Handle success
+  },
+  onError: (error) => {
+    // 

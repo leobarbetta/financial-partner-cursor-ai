@@ -1,0 +1,18 @@
+---
+description: 
+globs: 
+alwaysApply: false
+---
+## Add Contributions
+
+this file describes the Contributions feature.
+
+1. It should open a Modal
+2. The modal should have a close button
+3. The modal should have "Depositar" as Title
+4. It should require value and date
+5. It should have a button with the title "Depositar"
+6. After user clicks, modal should close
+7. User should view the toast with the succes/error message 
+8. it should post to '/contributions'
+9. it should send "value" and savingJardId
